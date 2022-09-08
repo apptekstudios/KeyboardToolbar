@@ -54,7 +54,7 @@ final class KeyboardToolButton: UIButton {
         } else {
             contentEdgeInsets = UIEdgeInsets(item.contentEdgeInsets)
         }
-        tintColor = .label
+        tintColor = item.representativeTool.displayRepresentation.color ?? .label
         setTitleColor(.label, for: .normal)
         adjustsImageSizeForAccessibilityContentSizeCategory = true
         if #available(iOS 15, *) {

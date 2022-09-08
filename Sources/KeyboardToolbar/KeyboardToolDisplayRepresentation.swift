@@ -16,14 +16,18 @@ public enum KeyboardToolDisplayRepresentation {
         ///
         /// Defaults to (0, 0).
         public let offset: CGPoint
+        
+        /// The color for the text.
+        public let color: UIColor?
 
         /// Initializes a configuration.
         /// - Parameters:
         ///   - text: The string to use when displaying the tool.
         ///   - offset: Offset to be applied to the text when shown in a button. Defaults to (0, 0).
-        public init(text: String, offset: CGPoint = .zero) {
+        public init(text: String, offset: CGPoint = .zero, color: UIColor? = nil) {
             self.text = text
             self.offset = offset
+            self.color = color
         }
     }
 
@@ -49,14 +53,17 @@ public enum KeyboardToolDisplayRepresentation {
         public let symbolName: String
         /// The point size of the symbol.
         public let pointSize: CGFloat
+        /// The color for the symbol.
+        public let color: UIColor?
 
         /// Initializes a configuration.
         /// - Parameters:
         ///   - symbolName: The name of the symbol to use when displaying the tool.
         ///   - pointSize: The point size of the symbol. Defaults to 14.
-        public init(symbolName: String, pointSize: CGFloat = 14) {
+        public init(symbolName: String, pointSize: CGFloat = 14, color: UIColor? = nil) {
             self.symbolName = symbolName
             self.pointSize = pointSize
+            self.color = color
         }
     }
 
@@ -72,8 +79,8 @@ public enum KeyboardToolDisplayRepresentation {
     ///   - text: The string to use when displaying the tool.
     ///   - offset: Offset to be applied to the text when shown in a button. Defaults to (0, 0).
     /// - Returns: A display representation.
-    public static func text(_ text: String, offset: CGPoint = .zero) -> Self {
-        return .text(TextConfiguration(text: text, offset: offset))
+    public static func text(_ text: String, offset: CGPoint = .zero, color: UIColor? = nil) -> Self {
+        return .text(TextConfiguration(text: text, offset: offset, color: color))
     }
 
     /// Creates a display representation that displays a tool using an image.
@@ -89,7 +96,20 @@ public enum KeyboardToolDisplayRepresentation {
     ///   - symbolName: The name of the symbol to use when displaying the tool.
     ///   - pointSize: The point size of the symbol. Defaults to 14.
     /// - Returns: A display representation.
-    public static func symbol(named symbolName: String, pointSize: CGFloat = 14) -> Self {
-        return .symbol(SymbolConfiguration(symbolName: symbolName, pointSize: pointSize))
+    public static func symbol(named symbolName: String, pointSize: CGFloat = 14, color: UIColor? = nil) -> Self {
+        return .symbol(SymbolConfiguration(symbolName: symbolName, pointSize: pointSize, color: color))
+    }
+    
+    
+    /// The color for the symbol.
+    public var color: UIColor? {
+        switch self {
+        case .text(let textConfiguration):
+            return textConfiguration.color
+        case .image:
+            return nil
+        case .symbol(let symbolConfiguration):
+            return symbolConfiguration.color
+        }
     }
 }

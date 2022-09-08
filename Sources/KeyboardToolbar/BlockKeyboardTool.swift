@@ -45,8 +45,8 @@ public struct BlockKeyboardTool: KeyboardTool {
     ///   - symbolName: The name of the symbol to use when displaying the tool.
     ///   - pointSize: The point size of the symbol. Defaults to 14.
     ///   - actionHandler: The block to be called when the tool is selected.
-    public init(symbolName: String, pointSize: CGFloat = 14, action actionHandler: @escaping () -> Void) {
-        let displayRepresentation: KeyboardToolDisplayRepresentation = .symbol(named: symbolName, pointSize: pointSize)
+    public init(symbolName: String, pointSize: CGFloat = 14, color: UIColor? = nil, action actionHandler: @escaping () -> Void) {
+        let displayRepresentation: KeyboardToolDisplayRepresentation = .symbol(named: symbolName, pointSize: pointSize, color: color)
         self.init(displayRepresentation: displayRepresentation, action: actionHandler)
     }
 

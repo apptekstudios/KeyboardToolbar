@@ -102,7 +102,9 @@ private extension KeyboardToolbarView {
                     barButtonItems += [.fixedSpace(group.spacing)]
                 }
             }
-            if idx < groups.count - 1 {
+            if let fixedSpace = group.fixedSpaceAfter {
+                barButtonItems += [.fixedSpace(fixedSpace)]
+            } else if idx < groups.count - 1 {
                 barButtonItems += [.flexibleSpace()]
             }
         }
