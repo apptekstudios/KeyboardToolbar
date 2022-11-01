@@ -25,9 +25,8 @@ public final class KeyboardToolbarView: UIInputView, UIInputViewAudioFeedback {
         return true
     }
 
-    private let keyboardContentLayoutGuide = UILayoutGuide()
-    private var keyboardContentLayoutGuideLeadingConstraint: NSLayoutConstraint?
-    private var keyboardContentLayoutGuideTrailingConstraint: NSLayoutConstraint?
+    private var toolbarLeadingConstraint: NSLayoutConstraint?
+    private var toolbarTrailingConstraint: NSLayoutConstraint?
     private let toolbar: UIToolbar = {
         let this = UIToolbar()
         this.translatesAutoresizingMaskIntoConstraints = false
@@ -44,8 +43,7 @@ public final class KeyboardToolbarView: UIInputView, UIInputViewAudioFeedback {
 
     /// Initializes a new toolbar to be shown above a keyboard.
     public init() {
-        let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 46)
-        super.init(frame: frame, inputViewStyle: .keyboard)
+        super.init(frame: .zero, inputViewStyle: .keyboard)
         setupView()
         setupLayout()
     }
@@ -56,35 +54,41 @@ public final class KeyboardToolbarView: UIInputView, UIInputViewAudioFeedback {
 
     private func setupView() {
         backgroundColor = .clear
-        addLayoutGuide(keyboardContentLayoutGuide)
         addSubview(toolbar)
     }
 
     private func setupLayout() {
-        keyboardContentLayoutGuideLeadingConstraint = keyboardContentLayoutGuide.leadingAnchor.constraint(equalTo: leadingAnchor)
-        keyboardContentLayoutGuideTrailingConstraint = keyboardContentLayoutGuide.trailingAnchor.constraint(equalTo: trailingAnchor)
+        translatesAutoresizingMaskIntoConstraints = false
+        toolbar.setContentCompressionResistancePriority(.required, for: .vertical)
+        // Not using safeAreaLayoutGuide here as it is not set correctly on first open of keyboard
+        let leading =  toolbar.leadingAnchor.constraint(equalTo: leadingAnchor)
+        toolbarLeadingConstraint = leading
+        let trailing = toolbar.trailingAnchor.constraint(equalTo: trailingAnchor)
+        toolbarTrailingConstraint = trailing
         NSLayoutConstraint.activate([
-            keyboardContentLayoutGuideLeadingConstraint!,
-            keyboardContentLayoutGuideTrailingConstraint!,
-            keyboardContentLayoutGuide.topAnchor.constraint(equalTo: topAnchor),
-            keyboardContentLayoutGuide.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            toolbar.leadingAnchor.constraint(equalTo: keyboardContentLayoutGuide.leadingAnchor),
-            toolbar.trailingAnchor.constraint(equalTo: keyboardContentLayoutGuide.trailingAnchor),
-            toolbar.topAnchor.constraint(equalTo: keyboardContentLayoutGuide.topAnchor),
-            toolbar.bottomAnchor.constraint(equalTo: keyboardContentLayoutGuide.bottomAnchor)
+           leading,
+            trailing,
+            toolbar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 2),
+           toolbar.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -2)
         ])
+        sizeToFit()
     }
-
+    
     public override func updateConstraints() {
         super.updateConstraints()
-        keyboardContentLayoutGuideLeadingConstraint?.constant = InputToolMargin.rawValue
-        keyboardContentLayoutGuideTrailingConstraint?.constant = InputToolMargin.rawValue * -1
+        
+        toolbarLeadingConstraint?.constant = InputToolMargin.rawValue
+        toolbarTrailingConstraint?.constant = InputToolMargin.rawValue * -1
     }
-
+    
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         setNeedsUpdateConstraints()
+        sizeToFit()
+    }
+    
+    public override var intrinsicContentSize: CGSize {
+        return .zero
     }
 }
 
